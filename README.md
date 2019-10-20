@@ -1,4 +1,4 @@
-#Sql-Udacity
+#Sql-Udacity-Data
 
 Investigate a Relational Database
 SQL code was written to run the SQL queries and to answer interesting questions about the database. As part of the project submission, output was generated to present the output.
