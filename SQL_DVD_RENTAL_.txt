@@ -1,0 +1,82 @@
+/*Query 1						
+Which Film Category is the most preferred by Families ? 	*/					
+WITH filmCat AS						
+(SELECT c.name AS category_name						
+FROM film_category fcat						
+JOIN category c						
+ON fcat.category_id = c.category_id						
+JOIN film f						
+ON f.film_id = fcat.film_id						
+JOIN inventory inv						
+ON f.film_id = inv.film_id						
+JOIN rental r						
+ON inv.inventory_id = r.inventory_id						
+WHERE c.name IN('Animation','Children','Classics','Comedy','Family','Music'))						
+SELECT category_name,COUNT(*) AS rental_count						
+FROM filmCat						
+GROUP BY 1						
+ORDER BY 2 DESC;						
+
+-----------------------------
+
+
+/*Query 2					
+Count the top  5 cities  in case of rental count	/*			
+SELECT co.country as top_Country, c.city as top_city,					
+       COUNT(*) AS rental_count					
+       FROM rental r					
+       JOIN customer cu					
+       ON r.customer_id = cu.customer_id			
+       JOIN address a					
+       ON cu.address_id = a.address_id				
+       JOIN city c					
+       ON a.city_id = c.city_id					
+       JOIN country co					
+       ON c.country_id = co.country_id				
+       GROUP BY 1,2					
+       ORDER BY 3 desc	
+       limit 5;
+				
+-----------------------------
+
+
+/*Query 3								
+Count of movies in each of the 4 filmrate_groups: NC-17, PG-13, R and G /*						
+SELECT DISTINCT(filmrating_groups),								
+                 COUNT(title) OVER (PARTITION BY filmrating_groups) AS film_by_rating	
+          FROM  								
+             (SELECT title,rating,								
+              CASE WHEN rating = 'NC-17' THEN 'Adults Only'								
+    	      WHEN rating = 'PG-13' THEN 'Parents Strongly Cautioned'						
+              WHEN rating = 'R' THEN 'Restricted'	   
+              ELSE   'General Audiences' 							
+              END AS  filmrating_groups								
+              FROM film ) t1								
+              ORDER BY  2 desc;
+	
+-----------------------------
+
+
+/*Query 4							
+Who were the top 5 Paying Customers in the year 2007 ?	/*						
+							
+							
+	SELECT DATE_TRUNC('month',p.payment_date) AS payment_mon,						
+	c.first_name||' '||c.last_name AS full_name,						
+	COUNT(*) AS payNumber_Permonth,						
+	SUM(p.amount) as total_sum						
+	FROM customer c						
+	JOIN payment p						
+	ON c.customer_id = p.customer_id						
+	WHERE p.payment_date BETWEEN '2007-01-01' AND '2007-12-31'						
+	GROUP BY 1,2						
+	ORDER BY 4 DESC						
+	LIMIT  5;				
+
+-----------------------------
+		
+
+
+							
+							
+								
